@@ -46,7 +46,7 @@ export function LandingPage({ onNavigateToDashboard }: { onNavigateToDashboard: 
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
               <Satellite className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="text-xl font-semibold text-foreground">AgroRisk</span>
+            <span className="text-xl font-semibold text-foreground">AgroAtlas</span>
           </button>
 
           <div className="flex items-center gap-4">
@@ -110,7 +110,7 @@ export function LandingPage({ onNavigateToDashboard }: { onNavigateToDashboard: 
         <div className="max-w-3xl w-full text-center space-y-8">
           <div className="space-y-4">
             <h1 className="text-5xl md:text-6xl font-bold text-foreground text-balance">
-              Satellite-Driven Agricultural Risk Intelligence
+              AgroAtlas
             </h1>
             <p className="text-xl text-muted-foreground text-balance">
               {isAuthenticated ? 'Welcome back! Access real-time field analytics and risk insights.' : 'Field-level insights for smarter credit and insurance decisions'}
