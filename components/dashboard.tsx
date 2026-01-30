@@ -24,9 +24,12 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus } from 'lucide-react'
+import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus, Bell } from 'lucide-react'
 import { CentralAsiaMap } from '@/components/central-asia-map'
 import { ProfilePopup } from '@/components/profile-popup'
+import { GeographicHeatmap } from '@/components/geographic-heatmap'
+import { DashboardKPI } from '@/components/dashboard-kpi'
+import { RiskHeatmap } from '@/components/risk-heatmap' // Import RiskHeatmap component
 
 const sampleNDVIData = [
   { month: 'Jan', ndvi: 0.3, expected: 0.35 },
@@ -77,113 +80,22 @@ const sampleFields = [
 
 function DashboardOverview() {
   const { t } = useLanguage()
+  const [selectedRegion, setSelectedRegion] = useState<any>(null)
+
   return (
-    <div className="space-y-8">
-      {/* Global Risk Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('overallRiskScore')}</p>
-              <h3 className="text-4xl font-bold text-foreground mt-2">{t('moderate')}</h3>
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-              <Gauge className="w-6 h-6 text-primary" />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-orange-500" />
-            <p className="text-sm text-muted-foreground">{t('portfolioContains')} {portfolioStats.totalAssets} {t('assets')}</p>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20 p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('confidenceLevel')}</p>
-              <h3 className="text-4xl font-bold text-foreground mt-2">86%</h3>
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-secondary/20 flex items-center justify-center">
-              <CheckCircle className="w-6 h-6 text-secondary" />
-            </div>
-          </div>
-          <div className="mt-4 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-500" />
-            <p className="text-sm text-muted-foreground">{t('satelliteObservations')}</p>
-          </div>
-        </Card>
-
-        <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20 p-6">
-          <div className="flex items-start justify-between">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('totalAssets')}</p>
-              <p className="text-3xl font-bold text-foreground mt-2">{portfolioStats.totalAssets}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t('underActiveMonitoring')}</p>
-            </div>
-            <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center">
-              <Plus className="w-6 h-6 text-accent" />
-            </div>
-          </div>
-        </Card>
-
-        <Card className="border-border p-4">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('portfolioValue')}</p>
-          <p className="text-3xl font-bold text-foreground mt-2">$2.4M</p>
-          <p className="text-xs text-muted-foreground mt-1">{t('totalExposure')}</p>
-        </Card>
-
-        <Card className="border-border p-4">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('valueAtRisk')}</p>
-          <div className="flex items-center gap-1 mt-2">
-            <AlertTriangle className="w-5 h-5 text-accent" />
-            <p className="text-3xl font-bold text-accent">$340K</p>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">{portfolioStats.assetsAtHighRisk} {t('highRiskAssets')}</p>
-        </Card>
-
-        <Card className="border-border p-4">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('riskDistribution')}</p>
-          <div className="flex items-center gap-2 mt-2">
-            <span className="text-xs text-green-600 font-semibold">45%</span>
-            <span className="text-xs text-orange-600 font-semibold">41%</span>
-            <span className="text-xs text-red-600 font-semibold">14%</span>
-          </div>
-          <p className="text-xs text-muted-foreground mt-1">Low / Moderate / High</p>
-        </Card>
-      </div>
-
-      {/* Recent Alerts */}
-      <Card className="bg-background border-border p-6">
-        <h3 className="text-lg font-semibold text-foreground mb-4">{t('recentRiskAlerts')}</h3>
-        <div className="space-y-3">
-          {alerts.map((alert) => (
-            <div
-              key={alert.id}
-              className={`p-4 rounded-lg border flex gap-3 ${
-                alert.severity === 'high'
-                  ? 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-900/50'
-                  : alert.severity === 'medium'
-                    ? 'bg-orange-50 border-orange-200 dark:bg-orange-950/20 dark:border-orange-900/50'
-                    : 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900/50'
-              }`}
-            >
-              <div className="flex-shrink-0 mt-0.5">
-                {alert.severity === 'high' ? (
-                  <AlertCircle className="w-5 h-5 text-red-600" />
-                ) : alert.severity === 'medium' ? (
-                  <AlertTriangle className="w-5 h-5 text-orange-600" />
-                ) : (
-                  <CheckCircle className="w-5 h-5 text-green-600" />
-                )}
-              </div>
-              <div className="flex-grow">
-                <p className="font-semibold text-foreground">{alert.field}</p>
-                <p className="text-sm text-muted-foreground mt-1">{alert.message}</p>
-              </div>
-            </div>
-          ))}
+    <div className="space-y-6">
+      {/* Main Dashboard Layout - 60/40 Split */}
+      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 h-[600px]">
+        {/* Map Section (60%) */}
+        <div className="w-full min-h-[600px]">
+          <GeographicHeatmap />
         </div>
-      </Card>
+
+        {/* KPI Section (40%) */}
+        <div className="w-full">
+          <DashboardKPI portfolioVaR={2500000} />
+        </div>
+      </div>
     </div>
   )
 }
@@ -647,19 +559,28 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Satellite className="w-5 h-5 text-primary-foreground" />
               </div>
-  <h1 className="text-2xl font-bold text-foreground">AgroAtlas</h1>
-  </button>
-  
-  {/* User Profile */}
-  <ProfilePopup 
-    user={{
-      name: user?.name || user?.email.split('@')[0] || 'User',
-      email: user?.email || '',
-      organization: 'AgroAtlas',
-      role: 'Risk Analyst'
-    }}
-              onLogout={logout}
-            />
+              <h1 className="text-2xl font-bold text-foreground">AgroAtlas</h1>
+            </button>
+            
+            {/* Right side icons */}
+            <div className="flex items-center gap-4">
+              {/* Notification Icon */}
+              <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">
+                <Bell className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              </button>
+
+              {/* User Profile */}
+              <ProfilePopup 
+                user={{
+                  name: user?.name || user?.email.split('@')[0] || 'User',
+                  email: user?.email || '',
+                  organization: 'AgroAtlas',
+                  role: 'Risk Analyst'
+                }}
+                onLogout={logout}
+              />
+            </div>
           </div>
 
           {/* Navigation Tabs */}
@@ -699,11 +620,11 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
         {activeTab === 'dashboard' && <DashboardOverview />}
         {activeTab === 'portfolio' && <PortfolioSection />}
         {activeTab === 'analytics' && <AnalyticsSection />}
-  {activeTab === 'fields' && <div className="space-y-8">
-  <div>
-  <h2 className="text-3xl font-bold text-foreground">{t('yourFields')}</h2>
-  <p className="text-sm text-muted-foreground mt-2">{t('analyzedLocations')}</p>
-  </div>
+        {activeTab === 'fields' && <div className="space-y-8">
+          <div>
+            <h2 className="text-3xl font-bold text-foreground">{t('yourFields')}</h2>
+            <p className="text-sm text-muted-foreground mt-2">{t('analyzedLocations')}</p>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {sampleFields.map((field) => (
@@ -716,16 +637,16 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('location')}</p>
-              <p className="font-semibold text-foreground">{field.location}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('crop')}</p>
-              <p className="font-semibold text-foreground">{field.crop}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('riskLevel')}</p>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('location')}</p>
+                      <p className="font-semibold text-foreground">{field.location}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('crop')}</p>
+                      <p className="font-semibold text-foreground">{field.crop}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('riskLevel')}</p>
                       <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300">
                         {field.risk}
                       </Badge>
