@@ -27,8 +27,9 @@ import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
 import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus, Bell } from 'lucide-react'
 import { CentralAsiaMap } from '@/components/central-asia-map'
 import { ProfilePopup } from '@/components/profile-popup'
-import { RiskHeatmap } from '@/components/risk-heatmap'
+import { GeographicHeatmap } from '@/components/geographic-heatmap'
 import { DashboardKPI } from '@/components/dashboard-kpi'
+import { RiskHeatmap } from '@/components/risk-heatmap' // Import RiskHeatmap component
 
 const sampleNDVIData = [
   { month: 'Jan', ndvi: 0.3, expected: 0.35 },
@@ -87,7 +88,7 @@ function DashboardOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 h-[600px]">
         {/* Map Section (60%) */}
         <div className="w-full min-h-[600px]">
-          <RiskHeatmap onRegionClick={setSelectedRegion} />
+          <GeographicHeatmap />
         </div>
 
         {/* KPI Section (40%) */}
@@ -95,8 +96,6 @@ function DashboardOverview() {
           <DashboardKPI portfolioVaR={2500000} />
         </div>
       </div>
-
-
     </div>
   )
 }
@@ -621,11 +620,11 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
         {activeTab === 'dashboard' && <DashboardOverview />}
         {activeTab === 'portfolio' && <PortfolioSection />}
         {activeTab === 'analytics' && <AnalyticsSection />}
-  {activeTab === 'fields' && <div className="space-y-8">
-  <div>
-  <h2 className="text-3xl font-bold text-foreground">{t('yourFields')}</h2>
-  <p className="text-sm text-muted-foreground mt-2">{t('analyzedLocations')}</p>
-  </div>
+        {activeTab === 'fields' && <div className="space-y-8">
+          <div>
+            <h2 className="text-3xl font-bold text-foreground">{t('yourFields')}</h2>
+            <p className="text-sm text-muted-foreground mt-2">{t('analyzedLocations')}</p>
+          </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             {sampleFields.map((field) => (
@@ -638,16 +637,16 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('location')}</p>
-              <p className="font-semibold text-foreground">{field.location}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('crop')}</p>
-              <p className="font-semibold text-foreground">{field.crop}</p>
-            </div>
-            <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('riskLevel')}</p>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('location')}</p>
+                      <p className="font-semibold text-foreground">{field.location}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('crop')}</p>
+                      <p className="font-semibold text-foreground">{field.crop}</p>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-1">{t('riskLevel')}</p>
                       <Badge className="bg-orange-100 text-orange-700 dark:bg-orange-950 dark:text-orange-300">
                         {field.risk}
                       </Badge>
