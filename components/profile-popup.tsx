@@ -36,14 +36,51 @@ export function ProfilePopup({ user, onLogout }: ProfilePopupProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [showSettings, setShowSettings] = useState(false)
   const [showProfileInfo, setShowProfileInfo] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
   const [riskAlerts, setRiskAlerts] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+  const [oldPassword, setOldPassword] = useState('')
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordError, setPasswordError] = useState('')
+  const [passwordSuccess, setPasswordSuccess] = useState(false)
 
   const userInitial = user.name?.[0]?.toUpperCase() || user.email[0].toUpperCase() || 'U'
 
   const handleLogout = () => {
     setIsOpen(false)
     onLogout()
+  }
+
+  const handlePasswordChange = () => {
+    setPasswordError('')
+    
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setPasswordError('All fields are required')
+      return
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setPasswordError('New passwords do not match')
+      return
+    }
+    
+    if (newPassword.length < 6) {
+      setPasswordError('Password must be at least 6 characters')
+      return
+    }
+    
+    // Simulate password change
+    console.log('[v0] Password changed successfully')
+    setPasswordSuccess(true)
+    setOldPassword('')
+    setNewPassword('')
+    setConfirmPassword('')
+    
+    setTimeout(() => {
+      setShowChangePassword(false)
+      setPasswordSuccess(false)
+    }, 2000)
   }
 
   return (
@@ -178,6 +215,78 @@ export function ProfilePopup({ user, onLogout }: ProfilePopupProps) {
         </PopoverContent>
       </Popover>
 
+      {/* Change Password Modal */}
+      <Dialog open={showChangePassword} onOpenChange={setShowChangePassword}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{t('changePassword')}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            {passwordSuccess && (
+              <div className="p-3 rounded-md bg-green-500/10 text-green-700 dark:text-green-400 text-sm">
+                Password updated successfully!
+              </div>
+            )}
+            
+            {passwordError && (
+              <div className="p-3 rounded-md bg-red-500/10 text-red-700 dark:text-red-400 text-sm">
+                {passwordError}
+              </div>
+            )}
+
+            <div>
+              <label className="text-sm font-medium text-foreground">{t('oldPassword')}</label>
+              <input
+                type="password"
+                value={oldPassword}
+                onChange={(e) => setOldPassword(e.target.value)}
+                placeholder="Enter old password"
+                className="w-full mt-1 px-3 py-2 rounded-md bg-muted text-foreground text-sm border border-border/50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground">{t('newPassword')}</label>
+              <input
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                placeholder="Enter new password"
+                className="w-full mt-1 px-3 py-2 rounded-md bg-muted text-foreground text-sm border border-border/50"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-foreground">{t('confirmPassword')}</label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm new password"
+                className="w-full mt-1 px-3 py-2 rounded-md bg-muted text-foreground text-sm border border-border/50"
+              />
+            </div>
+
+            <div className="flex gap-2">
+              <Button 
+                variant="outline"
+                className="flex-1 bg-transparent"
+                onClick={() => setShowChangePassword(false)}
+              >
+                Cancel
+              </Button>
+              <Button 
+                className="flex-1"
+                onClick={handlePasswordChange}
+                disabled={passwordSuccess}
+              >
+                {t('updatePassword')}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Profile Info Modal */}
       <Dialog open={showProfileInfo} onOpenChange={setShowProfileInfo}>
         <DialogContent className="sm:max-w-md">
@@ -239,7 +348,13 @@ export function ProfilePopup({ user, onLogout }: ProfilePopupProps) {
             </div>
 
             {/* Change Password Button */}
-            <Button className="w-full bg-transparent" variant="outline">
+            <Button 
+              onClick={() => {
+                setShowProfileInfo(false)
+                setShowChangePassword(true)
+              }}
+              className="w-full"
+            >
               <Lock className="w-4 h-4 mr-2" />
               {t('changePassword')}
             </Button>

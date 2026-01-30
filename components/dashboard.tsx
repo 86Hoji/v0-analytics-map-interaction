@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import React from "react"
 import { useState } from 'react'
 import { useAuth } from '@/lib/auth-context'
+import { useLanguage } from '@/lib/language-context'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -75,6 +76,7 @@ const sampleFields = [
 ]
 
 function DashboardOverview() {
+  const { t } = useLanguage()
   return (
     <div className="space-y-8">
       {/* Global Risk Summary */}
@@ -82,8 +84,8 @@ function DashboardOverview() {
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Overall Risk Score</p>
-              <h3 className="text-4xl font-bold text-foreground mt-2">Moderate</h3>
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('overallRiskScore')}</p>
+              <h3 className="text-4xl font-bold text-foreground mt-2">{t('moderate')}</h3>
             </div>
             <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
               <Gauge className="w-6 h-6 text-primary" />
@@ -91,7 +93,7 @@ function DashboardOverview() {
           </div>
           <div className="mt-4 flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-orange-500" />
-            <p className="text-sm text-muted-foreground">Portfolio contains {portfolioStats.totalAssets} assets</p>
+            <p className="text-sm text-muted-foreground">{t('portfolioContains')} {portfolioStats.totalAssets} {t('assets')}</p>
           </div>
         </Card>
 
@@ -114,32 +116,18 @@ function DashboardOverview() {
         <Card className="bg-gradient-to-br from-accent/10 to-accent/5 border-accent/20 p-6">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Status Indicator</p>
-              <h3 className="text-2xl font-bold text-foreground mt-2 flex items-center gap-2">
-                <span className="inline-block w-3 h-3 rounded-full bg-orange-500" />
-                Monitoring
-              </h3>
+              <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('totalAssets')}</p>
+              <p className="text-3xl font-bold text-foreground mt-2">{portfolioStats.totalAssets}</p>
+              <p className="text-xs text-muted-foreground mt-1">Under active monitoring</p>
             </div>
             <div className="w-12 h-12 rounded-lg bg-accent/20 flex items-center justify-center">
-              <Satellite className="w-6 h-6 text-accent" />
+              <Plus className="w-6 h-6 text-accent" />
             </div>
           </div>
-          <div className="mt-4">
-            <p className="text-sm text-muted-foreground">Last updated: {portfolioStats.lastUpdate}</p>
-          </div>
-        </Card>
-      </div>
-
-      {/* Portfolio Statistics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-border p-4">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Total Assets</p>
-          <p className="text-3xl font-bold text-foreground mt-2">{portfolioStats.totalAssets}</p>
-          <p className="text-xs text-muted-foreground mt-1">Under active monitoring</p>
         </Card>
 
         <Card className="border-border p-4">
-          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">Portfolio Value</p>
+          <p className="text-sm font-medium text-muted-foreground uppercase tracking-wide">{t('portfolioValue')}</p>
           <p className="text-3xl font-bold text-foreground mt-2">$2.4M</p>
           <p className="text-xs text-muted-foreground mt-1">Total exposure</p>
         </Card>
@@ -201,8 +189,9 @@ function DashboardOverview() {
 }
 
 function PortfolioSection() {
-  const [filterRisk, setFilterRisk] = useState<string>('all')
-  const [filterCrop, setFilterCrop] = useState<string>('all')
+  const { t } = useLanguage()
+  const [filterCrop, setFilterCrop] = useState('')
+  const [filterRisk, setFilterRisk] = useState('')
   const [csvUploadMode, setCsvUploadMode] = useState(false)
 
   const filteredAssets = sampleAssets.filter(
@@ -364,6 +353,7 @@ function PortfolioSection() {
 }
 
 function AnalyticsSection() {
+  const { t } = useLanguage()
   const [lat, setLat] = useState('36.7372')
   const [lon, setLon] = useState('69.2081')
   const [crop, setCrop] = useState('cotton')
@@ -429,10 +419,10 @@ function AnalyticsSection() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div>
-        <h2 className="text-3xl font-bold text-foreground">Risk Analytics</h2>
-        <p className="text-sm text-muted-foreground mt-2">Analyze regional risk and add assets to your portfolio</p>
-      </div>
+        <div>
+          <h3 className="text-2xl font-bold text-foreground">{t('analytics')}</h3>
+          <p className="text-sm text-muted-foreground mt-2">Analyze regional risk and add assets to your portfolio</p>
+        </div>
 
       {/* Map Selector Toggle */}
       {!showMap && (
@@ -441,7 +431,7 @@ function AnalyticsSection() {
           className="w-full bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30 py-5 font-semibold rounded-lg mb-2 transition-all"
         >
           <MapPin className="w-4 h-4 mr-2" />
-          Open Interactive Map to Select Location
+          {t('openInteractiveMap')}
         </Button>
       )}
 
@@ -469,9 +459,9 @@ function AnalyticsSection() {
       <Card className="bg-background border border-border/50 shadow-sm hover:shadow-md transition-shadow p-8">
         <div className="flex items-start justify-between mb-6">
           <div>
-            <h3 className="text-xl font-semibold text-foreground">Location & Asset Details</h3>
+            <h3 className="text-xl font-semibold text-foreground">{t('locationAssetDetails')}</h3>
             <p className="text-sm text-muted-foreground mt-1">
-              {selectedLocation ? `Selected: ${selectedLocation}` : 'Enter coordinates and select crop parameters'}
+              {selectedLocation ? `${t('selected')}: ${selectedLocation}` : t('enterCoordinates')}
             </p>
           </div>
           <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
@@ -481,7 +471,7 @@ function AnalyticsSection() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Latitude</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('latitude')}</label>
             <Input
               type="number"
               step="0.0001"
@@ -493,7 +483,7 @@ function AnalyticsSection() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Longitude</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('longitude')}</label>
             <Input
               type="number"
               step="0.0001"
@@ -505,7 +495,7 @@ function AnalyticsSection() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Crop Type</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('cropType')}</label>
             <Select value={crop} onValueChange={setCrop}>
               <SelectTrigger className="bg-input/50 border-border">
                 <SelectValue />
@@ -520,7 +510,7 @@ function AnalyticsSection() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-foreground mb-2">Season</label>
+            <label className="block text-sm font-medium text-foreground mb-2">{t('season')}</label>
             <Select value={season} onValueChange={setSeason}>
               <SelectTrigger className="bg-input/50 border-border">
                 <SelectValue />
@@ -539,7 +529,7 @@ function AnalyticsSection() {
           disabled={isAnalyzing || !lat || !lon}
           className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-6 font-semibold rounded-lg text-base shadow-sm hover:shadow-md transition-all"
         >
-          {isAnalyzing ? 'Running Analysis...' : 'Analyze Risk'}
+          {isAnalyzing ? t('analyzing') : t('analyze')}
         </Button>
       </Card>
 
@@ -642,6 +632,7 @@ function AnalyticsSection() {
 export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () => void }) {
   const [activeTab, setActiveTab] = useState('dashboard')
   const { user, logout } = useAuth()
+  const { t } = useLanguage()
 
   const userInitial = user?.name?.[0]?.toUpperCase() || user?.email[0].toUpperCase() || 'U'
 
@@ -661,44 +652,44 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
               <h1 className="text-2xl font-bold text-foreground">AgroRisk</h1>
             </button>
 
-  <ProfilePopup 
-    user={{
-      name: user?.name || user?.email.split('@')[0] || 'User',
-      email: user?.email || '',
-      organization: 'AgroRisk Platform',
-      role: 'Risk Analyst'
-    }}
-    onLogout={logout}
-  />
+            <ProfilePopup 
+              user={{
+                name: user?.name || user?.email.split('@')[0] || 'User',
+                email: user?.email || '',
+                organization: 'AgroRisk Platform',
+                role: 'Risk Analyst'
+              }}
+              onLogout={logout}
+            />
           </div>
 
           {/* Navigation Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="bg-transparent border-b-0 rounded-none h-auto gap-4 p-0 w-full justify-start">
-  <TabsTrigger
-  value="dashboard"
-  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
-  >
-  Dashboard
-  </TabsTrigger>
-  <TabsTrigger
-  value="portfolio"
-  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
-  >
-  Portfolio
-  </TabsTrigger>
-  <TabsTrigger
-  value="analytics"
-  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
-  >
-  Analytics
-  </TabsTrigger>
-  <TabsTrigger
-  value="fields"
-  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
-  >
-  Fields
-  </TabsTrigger>
+              <TabsTrigger
+                value="dashboard"
+                className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+              >
+                {t('dashboard')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="portfolio"
+                className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+              >
+                {t('portfolio')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="analytics"
+                className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+              >
+                {t('analytics')}
+              </TabsTrigger>
+              <TabsTrigger
+                value="fields"
+                className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+              >
+                {t('fields')}
+              </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
