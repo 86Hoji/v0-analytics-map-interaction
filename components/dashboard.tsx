@@ -27,9 +27,9 @@ import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
 import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus, Bell } from 'lucide-react'
 import { CentralAsiaMap } from '@/components/central-asia-map'
 import { ProfilePopup } from '@/components/profile-popup'
-import { GeographicHeatmap } from '@/components/geographic-heatmap'
+import { SVGRegionMap } from '@/components/svg-region-map'
 import { DashboardKPI } from '@/components/dashboard-kpi'
-import { RiskHeatmap } from '@/components/risk-heatmap' // Import RiskHeatmap component
+import { GeographicHeatmap } from '@/components/geographic-heatmap'
 
 const sampleNDVIData = [
   { month: 'Jan', ndvi: 0.3, expected: 0.35 },
@@ -88,7 +88,7 @@ function DashboardOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 h-[600px]">
         {/* Map Section (60%) */}
         <div className="w-full min-h-[600px]">
-          <GeographicHeatmap />
+          <SVGRegionMap />
         </div>
 
         {/* KPI Section (40%) */}
