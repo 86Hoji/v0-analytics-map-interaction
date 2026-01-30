@@ -25,6 +25,7 @@ import {
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus } from 'lucide-react'
 import { CentralAsiaMap } from '@/components/central-asia-map'
+import { ProfilePopup } from '@/components/profile-popup'
 
 const sampleNDVIData = [
   { month: 'Jan', ndvi: 0.3, expected: 0.35 },
@@ -660,63 +661,44 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
               <h1 className="text-2xl font-bold text-foreground">AgroRisk</h1>
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="flex items-center gap-2 hover:opacity-80 transition">
-                  <div className="flex flex-col items-end">
-                    <p className="text-sm font-medium text-foreground">{user?.name || user?.email.split('@')[0]}</p>
-                    <p className="text-xs text-muted-foreground">{user?.email}</p>
-                  </div>
-                  <Avatar className="h-8 w-8 bg-primary">
-                    <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-xs">
-                      {userInitial}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-card border-border w-48">
-                <DropdownMenuItem className="text-foreground cursor-pointer hover:bg-muted">
-                  <Settings className="w-4 h-4 mr-2" />
-                  Profile
-                </DropdownMenuItem>
-                <DropdownMenuItem 
-                  onClick={logout}
-                  className="text-foreground cursor-pointer hover:bg-muted"
-                >
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+  <ProfilePopup 
+    user={{
+      name: user?.name || user?.email.split('@')[0] || 'User',
+      email: user?.email || '',
+      organization: 'AgroRisk Platform',
+      role: 'Risk Analyst'
+    }}
+    onLogout={logout}
+  />
           </div>
 
           {/* Navigation Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="bg-transparent border-b border-border/30 rounded-none h-auto gap-8 p-0 w-full justify-start">
-              <TabsTrigger
-                value="dashboard"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary px-0 py-3 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm transition-all duration-300 hover:text-foreground"
-              >
-                Dashboard
-              </TabsTrigger>
-              <TabsTrigger
-                value="portfolio"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary px-0 py-3 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm transition-all duration-300 hover:text-foreground"
-              >
-                Portfolio
-              </TabsTrigger>
-              <TabsTrigger
-                value="analytics"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary px-0 py-3 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm transition-all duration-300 hover:text-foreground"
-              >
-                Analytics
-              </TabsTrigger>
-              <TabsTrigger
-                value="fields"
-                className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary px-0 py-3 text-muted-foreground data-[state=active]:text-foreground font-medium text-sm transition-all duration-300 hover:text-foreground"
-              >
-                Fields
-              </TabsTrigger>
+            <TabsList className="bg-transparent border-b-0 rounded-none h-auto gap-4 p-0 w-full justify-start">
+  <TabsTrigger
+  value="dashboard"
+  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+  >
+  Dashboard
+  </TabsTrigger>
+  <TabsTrigger
+  value="portfolio"
+  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+  >
+  Portfolio
+  </TabsTrigger>
+  <TabsTrigger
+  value="analytics"
+  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+  >
+  Analytics
+  </TabsTrigger>
+  <TabsTrigger
+  value="fields"
+  className="rounded-lg px-4 py-2 text-muted-foreground data-[state=active]:bg-primary/10 data-[state=active]:text-primary font-medium text-sm transition-all duration-200 hover:text-foreground hover:bg-muted/50 border-0 shadow-none"
+  >
+  Fields
+  </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
