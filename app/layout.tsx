@@ -8,7 +8,7 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'AgroRisk | Agricultural Risk Intelligence Platform',
+  title: 'AgroAtlas | Agricultural Risk Intelligence Platform',
   description: 'Field-level agricultural risk insights for banks, insurers, and agri-finance professionals. Analyze crop risks with satellite data and AI-powered recommendations.',
   generator: 'v0.app',
   viewport: {
