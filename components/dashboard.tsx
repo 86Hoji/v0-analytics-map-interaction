@@ -24,9 +24,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus } from 'lucide-react'
+import { AlertTriangle, TrendingUp, TrendingDown, Gauge, MapPin, Satellite, BarChart3, Download, Settings, LogOut, AlertCircle, CheckCircle, Plus, Bell } from 'lucide-react'
 import { CentralAsiaMap } from '@/components/central-asia-map'
 import { ProfilePopup } from '@/components/profile-popup'
+import { RiskHeatmap } from '@/components/risk-heatmap'
+import { DashboardKPI } from '@/components/dashboard-kpi'
 
 const sampleNDVIData = [
   { month: 'Jan', ndvi: 0.3, expected: 0.35 },
@@ -77,8 +79,23 @@ const sampleFields = [
 
 function DashboardOverview() {
   const { t } = useLanguage()
+  const [selectedRegion, setSelectedRegion] = useState<any>(null)
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
+      {/* Main Dashboard Layout - 60/40 Split */}
+      <div className="grid grid-cols-1 lg:grid-cols-[60%_40%] gap-6 h-[600px]">
+        {/* Map Section (60%) */}
+        <div className="w-full min-h-[600px]">
+          <RiskHeatmap onRegionClick={setSelectedRegion} />
+        </div>
+
+        {/* KPI Section (40%) */}
+        <div className="w-full">
+          <DashboardKPI portfolioVaR={2500000} />
+        </div>
+      </div>
+
       {/* Global Risk Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card className="bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 p-6">
@@ -647,19 +664,28 @@ export function Dashboard({ onNavigateToLanding }: { onNavigateToLanding?: () =>
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
                 <Satellite className="w-5 h-5 text-primary-foreground" />
               </div>
-  <h1 className="text-2xl font-bold text-foreground">AgroAtlas</h1>
-  </button>
-  
-  {/* User Profile */}
-  <ProfilePopup 
-    user={{
-      name: user?.name || user?.email.split('@')[0] || 'User',
-      email: user?.email || '',
-      organization: 'AgroAtlas',
-      role: 'Risk Analyst'
-    }}
-              onLogout={logout}
-            />
+              <h1 className="text-2xl font-bold text-foreground">AgroAtlas</h1>
+            </button>
+            
+            {/* Right side icons */}
+            <div className="flex items-center gap-4">
+              {/* Notification Icon */}
+              <button className="relative p-2 hover:bg-muted rounded-lg transition-colors">
+                <Bell className="w-5 h-5 text-muted-foreground hover:text-foreground" />
+                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
+              </button>
+
+              {/* User Profile */}
+              <ProfilePopup 
+                user={{
+                  name: user?.name || user?.email.split('@')[0] || 'User',
+                  email: user?.email || '',
+                  organization: 'AgroAtlas',
+                  role: 'Risk Analyst'
+                }}
+                onLogout={logout}
+              />
+            </div>
           </div>
 
           {/* Navigation Tabs */}
